@@ -2,6 +2,20 @@
 
 <button (click)="getPosts()">Get Posts</button>
 
-<div >
-  {{posts | json}}
-</div>
+<!-- <div *ngFor="let post of posts | async">
+  {{post }}
+</div> -->
+
+<ul >
+  <li *ngFor="let list of lists; let i = index">
+    
+    {{list['sku']}}
+    {{list['name']}}
+    {{list['sellprice']}}
+    {{list['unittext']}}
+    
+
+  </li>
+</ul>
+
+

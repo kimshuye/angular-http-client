@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient , HttpParams , HttpHeaders ,HttpErrorResponse } from '@angular/common/http';
 import { Http,Response } from '@angular/http';
 
-import { Post } from './post';
+
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/map';
@@ -18,57 +18,33 @@ export class AppComponent {
 
   readonly root_url = 'http://api.zortout.com/api.aspx';
   // readonly root_url = 'https://jsonplaceholder.typicode.com';
-  // private http:HttpClient;
   posts: Observable<any>;
 
-  data: any;
+  lists: {};
+  
+  private httpHeaders = new HttpHeaders()
+    // .set('Access-Control-Allow-Origin' , '*')
+    // .set('Access-Control-Allow-Methods' , 'POST, GET, OPTIONS, PUT')
+    // .set('Access-Control-Allow-Headers' , 'Origin, Content-Type, Accept, Authorization, X-Request-With')
+    // .set('Access-Control-Allow-Credentials' , 'true')
+
+		.set('Content-Type','application/json')
+		.set('Accept', 'application/json')
+    .set("storename", "haungdake60@gmail.com")
+    .set("apikey", "ufUxKCEK4Gc5b8xxOyz1n88Jjgm7Z938JYlm8VN9Buk=")
+    .set("apisecret", "NBxaU6HHPACPD/lMm26Hb1xPeCYmkojhMcukeFqdPw=")
+    // .set('Cache-Control', 'no-cache')
+    // .set('Postman-Token', 'c9d206b1-a3a7-0c89-ed7c-30769f52db01')
+    ;
+
 
   constructor(private http: HttpClient){
     console.log('Hello zort');
-    this.getContacts();
     this.getPosts();
-
-    // const httpHeaders = new HttpHeaders()
-    //   .set("storename", "haungdake60@gmail.com")
-    //   .set("apikey", "ufUxKCEK4Gc5b8xxOyz1n88Jjgm7Z938JYlm8VN9Buk=")
-    //   .set("apisecret", "NBxaU6HHPACPD/lMm26Hb1xPeCYmkojhMcukeFqdPw=")
-    //   .set('Cache-Control', 'no-cache')
-    //   .set('Postman-Token', 'b9dcba1b-e045-0814-8a99-386190f7bbe6')
-    //   ;
-
-    // const httpParams = new HttpParams()
-    //   .set('method','GETPRODUCTS')
-    //   .set('format','json')
-    //   .set('version','2')
-    //   ;
-
-    // this.http.get(
-    //   this.root_url 
-    //   ,{headers: httpHeaders,params: httpParams,responseType: 'json' } 
-    // ).subscribe(
-    //   data => {
-    //     console.log(data);
-    //   },
-    //   (err: HttpErrorResponse) => {
-    //     if (err.error instanceof Error) {
-    //       console.log("Client-side error occured.");
-    //     } else {
-    //       console.log("Server-side error occured. ");
-    //       console.log(err.error);
-    //     }
-    //   }
-    // );
 
   }
 
   getPosts(){
-    const httpHeaders = new HttpHeaders()
-      .set("storename", "haungdake60@gmail.com")
-      .set("apikey", "ufUxKCEK4Gc5b8xxOyz1n88Jjgm7Z938JYlm8VN9Buk=")
-      .set("apisecret", "NBxaU6HHPACPD/lMm26Hb1xPeCYmkojhMcukeFqdPw=")
-      .set('Cache-Control', 'no-cache')
-      .set('Postman-Token', '87b3a95b-1b05-905b-cb85-ba1a0807e7d0')
-      ;
 
     const httpParams = new HttpParams()
       .set('method','GETPRODUCTS')
@@ -76,27 +52,35 @@ export class AppComponent {
       .set('version','2')
       ;
 
-    return this.http.get(
+    this.posts = this.http.get(
         this.root_url 
-        ,{headers: httpHeaders,params: httpParams,responseType: 'json' } 
-    )
-    .map((res:Response) => res.json() )
-    ;
-  }
+        ,{headers: this.httpHeaders,params: httpParams,responseType: 'json' } 
+    );
 
-  getContacts(){
-    this.getPosts().subscribe(data => {
+    this.posts.subscribe(data => {
       console.log(data);
-      this.data = data;
+      this.lists = data['list'] ;
     },
     (err: HttpErrorResponse) => {
-      if (err.error instanceof Error) {
-      console.log('An error occurred:', err.error.message);
-      } else {
-      console.log('Backend returned status code: ', err.status);
-      console.log('Response body:', err.error);
-      }
-     });
+        if (err.error instanceof Error) {
+          console.log('An error occurred:', err.error.message);
+        } else {
+          console.log('Backend returned status code: ', err.status);
+          console.log('Response body:', err.error);
+        }
+      })
+      ;
   }
 
+}
+
+interface list{
+  "name": string;
+  "description": string;
+  "sku": string;
+  "sellprice": number;
+  "purchaseprice": number;
+  "stock": number;
+  "availablestock": number;
+  "unittext": string;
 }
